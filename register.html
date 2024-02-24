@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Firebase Auth</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+</head>
+
+<body>
+    <center>
+    <form id="MainForm" class="w-25 m-4">
+        
+        <h2 class="mb-3">Register User</h2>
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="fnameInp" placeholder="Password">
+            <label for="floatingPassword">First Name</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="lnameInp" placeholder="Password">
+            <label for="floatingPassword">Last Name</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="email" class="form-control" id="emailInp" placeholder="name@example.com">
+            <label for="floatingInput">Email address</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="password" class="form-control" id="passwordInp" placeholder="Password">
+            <label for="floatingPassword">Password</label>
+        </div>
+        
+        <a href="login.html"> <button type="button" style="float: right;" class="btn btn-primary ">Login</button></a>
+        <button type="submit" style="float: left;" class="btn btn-primary " >Register</button>
+        
+    </form>
+    </center>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+
+        <script type="module">
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+            import { getDatabase, set, ref } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+            import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+            const firebaseConfig = {
+              apiKey: "AIzaSyDy2QL6DEPheuTW_gmVsKpQI0XVtB5uSXg",
+              authDomain: "fir-authentication-7d62c.firebaseapp.com",
+              projectId: "fir-authentication-7d62c",
+              storageBucket: "fir-authentication-7d62c.appspot.com",
+              messagingSenderId: "871581498616",
+              appId: "1:871581498616:web:1da14f686571957cc98f0d"
+            };
+          
+            const app = initializeApp(firebaseConfig);
+            const db = getDatabase();
+            const auth = getAuth(app);
+
+            let FnameInp = document.getElementById('fnameInp');
+            let LnameInp = document.getElementById('lnameInp');
+            let EmailInp = document.getElementById('emailInp');
+            let PassInp = document.getElementById('passwordInp');
+                        let MainForm = document.getElementById('MainForm');
+
+            let RegisterUser = evt => {
+                evt.preventDefault();
+
+                createUserWithEmailAndPassword(auth, EmailInp.value, PassInp.value)
+                .then((credentials)=>{
+                    set(ref(db, 'UsersAuthList/' + credentials.user.uid),{
+                        firstname: FnameInp.value,
+                        lastname: LnameInp.value
+                    })
+                    alert("Sucessfully Registered");
+                    document.getElementById('emailInp').value='';
+                    document.getElementById('passwordInp').value='';
+                    document.getElementById('fnameInp').value='';
+                    document.getElementById('lnameInp').value="";
+                })
+                .catch((error)=>{
+                    alert(error.message);
+                    console.log(error.code);
+                    console.log(error.message);
+
+                })
+            }
+            MainForm.addEventListener('submit', RegisterUser);
+          </script>
+</body>
+
+
+
+</html>
